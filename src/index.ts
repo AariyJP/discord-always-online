@@ -10,21 +10,21 @@ if (tokens.length === 0) {
   process.exit(1);
 }
 
-const login = async (token, index) => {
+const login = async (token: string, index: number): Promise<void> => {
   const client = new Discord.Client();
 
   client.once("ready", () => {
     console.log(`Client ${index + 1} logged in as ${client.user.tag}`);
   });
 
-  client.on("error", error => {
+  client.on("error", (error: Error) => {
     console.error(`Client ${index + 1} Discord client error`, error);
   });
 
   await client.login(token);
 };
 
-const main = async () => {
+const main = async (): Promise<void> => {
   const results = await Promise.allSettled(tokens.map(login));
   const failedResults = results.filter(result => result.status === "rejected");
 
