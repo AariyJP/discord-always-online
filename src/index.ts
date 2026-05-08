@@ -17,7 +17,7 @@ const login = async (token: string, index: number): Promise<void> => {
     console.log(`Client ${index + 1} logged in as ${client.user.tag}`);
   });
 
-  client.on("error", (error: unknown) => {
+  client.on("error", (error: Error) => {
     console.error(`Client ${index + 1} Discord client error`, error);
   });
 

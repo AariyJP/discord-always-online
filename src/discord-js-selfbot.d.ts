@@ -5,7 +5,7 @@ declare module "discord.js-selfbot" {
     };
 
     once(event: "ready", listener: () => void): this;
-    on(event: "error", listener: (error: unknown) => void): this;
+    on(event: "error", listener: (error: Error) => void): this;
     login(token: string): Promise<string>;
   }
 
