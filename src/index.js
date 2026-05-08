@@ -24,15 +24,19 @@ const login = async (token, index) => {
   await client.login(token);
 };
 
-const results = await Promise.allSettled(tokens.map(login));
-const failedResults = results.filter(result => result.status === "rejected");
+const main = async () => {
+  const results = await Promise.allSettled(tokens.map(login));
+  const failedResults = results.filter(result => result.status === "rejected");
 
-for (const [index, result] of results.entries()) {
-  if (result.status === "rejected") {
-    console.error(`Client ${index + 1} login failed`, result.reason);
+  for (const [index, result] of results.entries()) {
+    if (result.status === "rejected") {
+      console.error(`Client ${index + 1} login failed`, result.reason);
+    }
   }
-}
 
-if (failedResults.length === tokens.length) {
-  process.exit(1);
-}
+  if (failedResults.length === tokens.length) {
+    process.exit(1);
+  }
+};
+
+main();
