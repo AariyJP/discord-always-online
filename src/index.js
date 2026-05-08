@@ -1,23 +1,38 @@
 import Discord from "discord.js-selfbot";
 
-const token = process.env.DISCORD_TOKEN;
+const tokens = (process.env.DISCORD_TOKENS ?? "")
+  .split(",")
+  .map(token => token.trim())
+  .filter(Boolean);
 
-if (!token) {
-  console.error("DISCORD_TOKEN is required");
+if (tokens.length === 0) {
+  console.error("DISCORD_TOKENS is required");
   process.exit(1);
 }
 
-const client = new Discord.Client();
+const login = async (token, index) => {
+  const client = new Discord.Client();
 
-client.once("ready", () => {
-  console.log(`Logged in as ${client.user.tag}`);
-});
+  client.once("ready", () => {
+    console.log(`Client ${index + 1} logged in as ${client.user.tag}`);
+  });
 
-client.on("error", error => {
-  console.error("Discord client error", error);
-});
+  client.on("error", error => {
+    console.error(`Client ${index + 1} Discord client error`, error);
+  });
 
-client.login(token).catch(error => {
-  console.error("Login failed", error);
+  await client.login(token);
+};
+
+const results = await Promise.allSettled(tokens.map(login));
+const failedResults = results.filter(result => result.status === "rejected");
+
+for (const [index, result] of results.entries()) {
+  if (result.status === "rejected") {
+    console.error(`Client ${index + 1} login failed`, result.reason);
+  }
+}
+
+if (failedResults.length === tokens.length) {
   process.exit(1);
-});
+}
