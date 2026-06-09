@@ -14,8 +14,9 @@ const login = async (token: string, index: number): Promise<void> => {
   const client = new Discord.Client({
     ws: {
       properties: {
-        browser: "Discord Client",
-        device: "Discord Client",
+        $os: "Windows",
+        $browser: "Discord Client",
+        $device: "",
       },
     },
   });

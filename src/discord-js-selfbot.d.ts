@@ -2,8 +2,9 @@ declare module "discord.js-selfbot" {
   type ClientOptions = {
     ws?: {
       properties?: {
-        browser?: string;
-        device?: string;
+        $os?: string;
+        $browser?: string;
+        $device?: string;
       };
     };
   };
