@@ -11,7 +11,14 @@ if (tokens.length === 0) {
 }
 
 const login = async (token: string, index: number): Promise<void> => {
-  const client = new Discord.Client();
+  const client = new Discord.Client({
+    ws: {
+      properties: {
+        browser: "Discord Client",
+        device: "Discord Client",
+      },
+    },
+  });
 
   client.once("ready", () => {
     console.log(`Client ${index + 1} logged in as ${client.user.tag}`);

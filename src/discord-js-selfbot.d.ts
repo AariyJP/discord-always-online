@@ -1,5 +1,16 @@
 declare module "discord.js-selfbot" {
+  type ClientOptions = {
+    ws?: {
+      properties?: {
+        browser?: string;
+        device?: string;
+      };
+    };
+  };
+
   export class Client {
+    constructor(options?: ClientOptions);
+
     user: {
       tag: string;
     };
