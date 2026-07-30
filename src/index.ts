@@ -21,8 +21,30 @@ const login = async (token: string, index: number): Promise<void> => {
     },
   });
 
+  for (const action of Object.values(client.actions)) {
+    const handle = action.handle.bind(action);
+
+    action.handle = (...args: unknown[]): unknown => {
+      try {
+        return handle(...args);
+      } catch (error) {
+        console.error(`Client ${index + 1} gateway action failed`, error);
+        return {};
+      }
+    };
+  }
+
   client.once("ready", () => {
     console.log(`Client ${index + 1} logged in as ${client.user.tag}`);
+
+    void (async () => {
+      try {
+        const settings = await client.api.users("@me").settings.get();
+        await client.user.setPresence({ status: settings.status, afk: true });
+      } catch (error) {
+        console.error(`Client ${index + 1} failed to set AFK`, error);
+      }
+    })();
   });
 
   client.on("error", (error: Error) => {
