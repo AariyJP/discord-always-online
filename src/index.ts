@@ -22,6 +22,8 @@ const login = async (token: string, index: number): Promise<void> => {
   });
 
   for (const action of Object.values(client.actions)) {
+    if (typeof action.handle !== "function") continue;
+
     const handle = action.handle.bind(action);
 
     action.handle = (...args: unknown[]): unknown => {
