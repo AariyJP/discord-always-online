@@ -42,8 +42,9 @@ declare module "discord.js-selfbot" {
       };
     };
 
-    once(event: "ready", listener: () => void): this;
+    on(event: "shardReady", listener: () => void): this;
     on(event: "error", listener: (error: Error) => void): this;
+    on(event: "raw", listener: (packet: { t?: string; d?: UserSettings }) => void): this;
     login(token: string): Promise<string>;
   }
 

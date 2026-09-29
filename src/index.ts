@@ -26,7 +26,7 @@ const login = async (token: string, index: number): Promise<void> => {
 
     const handle = action.handle.bind(action);
 
-    action.handle = (...args: unknown[]): unknown => {
+    action.handle = (...args) => {
       try {
         return handle(...args);
       } catch {
@@ -35,7 +35,7 @@ const login = async (token: string, index: number): Promise<void> => {
     };
   }
 
-  client.once("ready", async () => {
+  client.on("shardReady", async () => {
     console.log(`Client ${index + 1} logged in as ${client.user.tag}`);
 
     try {
@@ -46,7 +46,18 @@ const login = async (token: string, index: number): Promise<void> => {
     }
   });
 
-  client.on("error", (error: Error) => {
+  client.on("raw", packet => {
+    if (packet.t !== "USER_SETTINGS_UPDATE" || !packet.d?.status) return;
+
+    const { status } = packet.d;
+
+    client.user
+      .setPresence({ status, afk: true })
+      .then(() => console.log(`Client ${index + 1} status changed to ${status}`))
+      .catch(error => console.error(`Client ${index + 1} failed to set AFK`, error));
+  });
+
+  client.on("error", error => {
     console.error(`Client ${index + 1} error`, error);
   });
 
